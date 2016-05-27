@@ -9,11 +9,11 @@ import java.net.Socket;
 
 
 public class Insertion extends Thread{
-	private Entite entite; 
+	private Entite entite;
 	public Insertion(Entite entite){
 		this.entite = entite;
 	}
-	
+
 	//Thread pour accepter une connexion tcp
 	public void run(){
 		try {
@@ -23,7 +23,7 @@ public class Insertion extends Thread{
 				System.out.println("Nouvelle connexion TCP avec la machine :"+socket.getInetAddress().getHostAddress());
 				BufferedReader br=new BufferedReader(new InputStreamReader(socket.getInputStream()));
 				PrintWriter pw=new PrintWriter(new OutputStreamWriter(socket.getOutputStream()));
-				//Si l'entité qui reçoit une demande est doubleur 
+				//Si l'entité qui reçoit une demande est doubleur
 				if( (entite.getAnneau2()!=null) && (entite.getAnneau1()!=null)){
 					pw.println(Message.NOTC);
 					pw.flush();
@@ -37,7 +37,7 @@ public class Insertion extends Thread{
 				if(entite.getAnneau1() != null){
 					anneau = entite.getAnneau1();
 					isAnneau1 = true;
-					port = this.entite.getPortUDP2(); //car l'anneau 1 est utilisé 
+					port = this.entite.getPortUDP2(); //car l'anneau 1 est utilisé
 				}
 				else{
 					anneau = entite.getAnneau2();
@@ -50,7 +50,7 @@ public class Insertion extends Thread{
 				String[] tab = mess.split(" ");
 				System.out.println("Message reçu : "+mess);
 				//message reçu est "NEWC ip port\n"?
-				if( (tab.length == 3) && (tab[0].equals(Message.NEWC.toString())) && this.entite.ipIsOk(tab[1]) 
+				if( (tab.length == 3) && (tab[0].equals(Message.NEWC.toString())) && this.entite.ipIsOk(tab[1])
 						&&	this.entite.portIsOk(tab[2]) ){
 					System.out.println("Traitement d'insertion ...");
 					if(isAnneau1){
@@ -70,11 +70,11 @@ public class Insertion extends Thread{
 					Anneau an ;
 					if(!isAnneau1){
 						System.out.println("Modification de l'entité "+this.entite.getId()+" Dans son anneau principal ...");
-						an = new Anneau(tab[2],  tab[4], tab[1], tab[3], this.entite.getAnneau1().getIdm());
+						an = new Anneau(tab[2],  tab[4], tab[1], tab[3]);
 						this.entite.setAnneau1(an);
 					}else{
 						System.out.println("Modification de l'entité "+this.entite.getId()+" Dans son anneau secondaire ...");
-						an = new Anneau(tab[2],  tab[4], tab[1], tab[3], this.entite.getAnneau1().getIdm());
+						an = new Anneau(tab[2],  tab[4], tab[1], tab[3]);
 						this.entite.setAnneau2(an);
 					}
 					pw.println(Message.ACKD+" "+port);
@@ -91,11 +91,11 @@ public class Insertion extends Thread{
 			System.out.println("Erreur : Acceptation de la connexion échouée");
 		}
 	}
-	
+
 	public void recInsertion(){
 		this.start();
 	}
-	
+
 	//Demande d'insertion dans un anneau
 	public void askInsertion(String ip, String port, boolean isDuplication){
 		try {
@@ -143,6 +143,8 @@ public class Insertion extends Thread{
 						else
 							this.entite.setAnneau2(anneau);
 						System.out.println("Insertion dans l'anneau réussie avec la machine :"+socket.getInetAddress().getHostAddress()+" !!");
+						ReceiveMultidiff reMul= new ReceiveMultidiff(this.entite);
+						reMul.attendreMultidiff();
 					}else
 						System.out.println("Erreur : Message reçu incorrect");
 				}else{//C'est une duplication
@@ -173,5 +175,5 @@ public class Insertion extends Thread{
 			e.printStackTrace();
 		}
 	}
-	
+
 }
