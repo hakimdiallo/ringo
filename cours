@@ -1,0 +1,83 @@
+Sequences 								Mutable?
+	- Listes								oui
+	- Dictionnaire					oui	
+	- chaines								non
+	- uplets								non
+	- ensembles							oui
+	
+Upltes (ordonné, immmutable)
+	t = ()
+	t = 1,2,3,4 // avec ou sans parentheses
+	w,o,y,z = t // unpacking
+	t[4] == 3 // indiçage
+	t[2] = 8 !!! NON !!! // not possible
+	
+Ensembles: Non ordonné, sans doublons
+	S = {1,2,3}
+	S = set()
+	S = set([1,1,2,3,4,2]) // l'ensemble {1,2,3,4}
+	S = { i for i in range(2,10) if i%2==0 }
+		Comprehension d'ensemble, mutation d'ensemble
+
+	Teste d'appartenance
+		2 in {1,3,5,7} -> Faux
+	
+	Fonctions:
+		len(S) // la taille de l'ensemble
+		
+	Operations sur des ensembles S1, S2
+		S1 | S2 // union
+		S1 & S2 // intersection
+		S2 - S2 // difference ensembliste
+		S1 ^ S2 // difference symetrique
+		S1 <= S2 // inclusion
+		S1 = S2 // affectation de REFERENCE!!!
+		S2 = S1.copy() // cree un nouvel ensemble 
+									 // shallow copy: copie les references (seulement) contenues dans l'ensemble
+		S1.remove(2)
+		NB: si 2 n'appartient pas à S1 alors S1.remove(2) provoque une exception
+		On peut aussi ecrire pour les operations ensemblistes
+		S1.union(S2), S1.intersect(S2) .....
+		
+------------------------------------------------------------------------------------------------		
+
+Dictionnaires
+	Ensembles des paires clé-valeur
+	Les clés sont uniques (pas de doublons)
+	L'ensemble est non ordonnée
+	
+	d = {} // pourrait etre un ensemble ou un dictionnaire
+	d = dict()
+	d = dict([(1,2),(3,4)]) // clé = 1 , valeur 2 ...
+	d = {1:2,3:4} // clé = 1 , valeur 2 ...
+	
+	Mutations de dictionnaire
+		d = { c:2*c for c in "abcde" }
+			cle | valeur
+			 "a"|	 "aa"
+			 "b"|  "bb"
+			 .........
+		
+		Les cles doivent etre de type (entier, caractere,...) ou sequence IMMUTABLES (chaines, uplet)
+		
+-------------------------------------------------------------------------------------------------
+
+Implementation des dictionnaires et ensembles
+	Tables de hachage
+		 0														 t-1
+		|  |  |  |  |  |  |  |  |  |  |  |
+		
+		Pour ajouter c:v
+		on applique une fonction de hachage
+			f: N-->{0,.....,t-1}
+			f(x) = 2x + 3 (mod t)
+			
+		Collision: Lorsqu'on insere plus d'un element (c1:v1) (c2:v2) avec f(c1) = f(c2)
+		
+		Politique de gestion de debordement
+			- chainage externe // cf. figure
+			- chainage interne // cf. figure
+			
+		Pour minimiser les collisions l'implémentation de Python maintient un taux de remplissage 
+		de la table de hachage <= 70%
+	

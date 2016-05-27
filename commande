@@ -1,0 +1,5 @@
+#demander une insertion ou une duplication
+java Test 172 4222 4700 5000 5810 123.658.475.100 192.168.001.099 4445
+
+#accepter une insertion ou une duplication
+java Ringo_main 147 4445 4750 5555 5852 147.25.41.585

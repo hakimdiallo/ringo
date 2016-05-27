@@ -1,0 +1,5 @@
+#Creer une entité :d'id 147,port TCP: 4445, port UDP anneau 1:4750, port UDP anneau 2:5555, port Diff: 5852, ip-diff:
+java Rigo_main 147 4445 4750 5555 5852 147.25.41.585
+
+#demande d'insertion 
+NEWC 192.455.140.001 4445
