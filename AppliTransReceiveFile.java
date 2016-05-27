@@ -77,8 +77,10 @@ public class AppliTransReceiveFile {
         byte[] b = tab[7].getBytes();
         System.out.println("--------------------------------------------Writing into file---------------------------------------------------------------------");
         fos.write(b,this.offset,b.length-1);
+        fos.flush();
         this.offset += b.length;
         if(this.count_mess == (this.nummess - 1)){
+          fos.close();
           for (int i=0; i < this.ordre_de_reception.length-1 ; i++) {
             if( this.ordre_de_reception[i] > this.ordre_de_reception[i+1] ){
               this.file.delete();
