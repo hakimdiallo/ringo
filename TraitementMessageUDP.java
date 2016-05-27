@@ -150,7 +150,7 @@ public class TraitementMessageUDP extends Thread{
 				//Si un anneau existe
 				if( (entite.getAnneau1() != null) || (entite.getAnneau2() != null)  ){
 					this.recDIFF(mess);
-					//this.recTRANS(mess);
+					this.recTRANS(mess);
 				}
 			}
 		}
