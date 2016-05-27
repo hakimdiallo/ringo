@@ -70,7 +70,7 @@ public class AppliTransReceiveFile {
 
   public void receive(String[] tab){
     try{
-      if(this.count_mess > this.nummess){
+      if(this.count_mess < this.nummess){
         FileOutputStream fos = new FileOutputStream(new File(this.nom_fichier));
         this.ordre_de_reception[this.count_mess] = UtilsAndController.toBigEndian(tab[5]);
         this.count_mess++;
