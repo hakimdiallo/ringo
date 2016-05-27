@@ -77,7 +77,7 @@ public class AppliTransReceiveFile {
         this.count_mess++;
         byte[] b = tab[7].getBytes();
         System.out.println("--------------------------------------------Writing into file---------------------------------------------------------------------");
-        ps.print(b);
+        ps.print(tab[7]);
         //fos.flush();
         //fos.close();
         //this.offset += b.length;
