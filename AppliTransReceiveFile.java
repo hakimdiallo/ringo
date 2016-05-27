@@ -71,14 +71,15 @@ public class AppliTransReceiveFile {
   public void receive(String[] tab){
     try{
       if(this.count_mess < this.nummess){
-        FileOutputStream fos = new FileOutputStream(this.file,true);
+        OutputStream fos = new FileOutputStream(this.file,true);
+        PrintStream ps = new PrintStream(fos);
         this.ordre_de_reception[this.count_mess] = Integer.parseInt(tab[5]);
         this.count_mess++;
         byte[] b = tab[7].getBytes();
         System.out.println("--------------------------------------------Writing into file---------------------------------------------------------------------");
-        fos.write(b);
-        fos.flush();
-        fos.close();
+        ps.print(b);
+        //fos.flush();
+        //fos.close();
         //this.offset += b.length;
         if(this.count_mess == this.nummess ){
           for (int i=0; i < this.ordre_de_reception.length-1 ; i++) {
