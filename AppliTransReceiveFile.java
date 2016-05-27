@@ -36,7 +36,7 @@ public class AppliTransReceiveFile {
         fis.read(b);
         String content = new String(b);
         String content_size = UtilsAndController.convertSize(String.valueOf(content.length()),3);
-        String no_mess = UtilsAndController.toLillteEndian(i);
+        String no_mess = UtilsAndController.convertSize(String.valueOf(i),8);
         String message = Message.APPL.toString()+" "+UtilsAndController.makeUniqueId()+" "+"TRANS###"+" "+"SEN"+" "+this.idTrans+" "+no_mess+" "+content_size+" "+content;
         messages[i] = message;
       }
@@ -56,7 +56,7 @@ public class AppliTransReceiveFile {
   public void initReception(String num){
     try{
       this.file.createNewFile();
-      this.nummess = UtilsAndController.toBigEndian(num);
+      this.nummess = Integer.parseInt(num);
       this.count_mess = 0;
       this.ordre_de_reception = new int[this.nummess];
     }
