@@ -329,7 +329,8 @@ public class TraitementMessageUDP extends Thread{
 				if( fichier.exists() && !fichier.isDirectory() ){
 					this.app = new AppliTransReceiveFile(tab[5],tab[4], fichier);
 					int nummess = app.getNumMess();
-					String message = Message.APPL.toString()+" "+UtilsAndController.makeUniqueId()+" "+"TRANS###"+" "+"ROK"+" "+app.getIdTrans()+" "+tab[4]+" "+tab[5]+" "+UtilsAndController.toLillteEndian(nummess);
+					String numero = UtilsAndController.convertSize(String.valueOf(nummess),8);
+					String message = Message.APPL.toString()+" "+UtilsAndController.makeUniqueId()+" "+"TRANS###"+" "+"ROK"+" "+app.getIdTrans()+" "+tab[4]+" "+tab[5]+" "+numero;
 					this.transMess(message);
 					String[] messages = app.getMessagesOfFile();
 					for (int i=0; i < messages.length ; i++) {
