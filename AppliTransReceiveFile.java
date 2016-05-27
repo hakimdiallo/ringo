@@ -72,7 +72,7 @@ public class AppliTransReceiveFile {
     try{
       if(this.count_mess < this.nummess){
         FileOutputStream fos = new FileOutputStream(new File(this.nom_fichier));
-        this.ordre_de_reception[this.count_mess] = UtilsAndController.toBigEndian(tab[5]);
+        this.ordre_de_reception[this.count_mess] = Integer.parseInt(tab[5]);
         this.count_mess++;
         byte[] b = tab[7].getBytes();
         System.out.println("--------------------------------------------Writing into file---------------------------------------------------------------------");
