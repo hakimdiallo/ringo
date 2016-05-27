@@ -71,16 +71,16 @@ public class AppliTransReceiveFile {
   public void receive(String[] tab){
     try{
       if(this.count_mess < this.nummess){
-        FileOutputStream fos = new FileOutputStream(new File(this.nom_fichier));
+        FileOutputStream fos = new FileOutputStream(this.file,true);
         this.ordre_de_reception[this.count_mess] = Integer.parseInt(tab[5]);
         this.count_mess++;
         byte[] b = tab[7].getBytes();
         System.out.println("--------------------------------------------Writing into file---------------------------------------------------------------------");
         fos.write(b,this.offset,b.length-1);
         fos.flush();
-        this.offset += b.length;
-        if(this.count_mess == (this.nummess - 1)){
-          fos.close();
+        fos.close();
+        //this.offset += b.length;
+        if(this.count_mess == this.nummess ){
           for (int i=0; i < this.ordre_de_reception.length-1 ; i++) {
             if( this.ordre_de_reception[i] > this.ordre_de_reception[i+1] ){
               this.file.delete();
