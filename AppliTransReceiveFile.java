@@ -8,6 +8,7 @@ public class AppliTransReceiveFile {
   private int[] ordre_de_reception;
   private int count_mess;
   private int nummess;
+  private int offset;
 
   public AppliTransReceiveFile(String _nom, String _size, File f){
     this.nom_fichier = _nom;
@@ -58,6 +59,7 @@ public class AppliTransReceiveFile {
       this.file.createNewFile();
       this.nummess = Integer.parseInt(num);
       this.count_mess = 0;
+      this.offset = 0;
       this.ordre_de_reception = new int[this.nummess];
     }
     catch(Exception e){
@@ -72,8 +74,10 @@ public class AppliTransReceiveFile {
         FileOutputStream fos = new FileOutputStream(this.file);
         this.ordre_de_reception[this.count_mess] = UtilsAndController.toBigEndian(tab[5]);
         this.count_mess++;
-        fos.write(tab[7].getBytes());
-        if(this.count_mess == this.nummess - 1){
+        byte[] b = tab[7].getBytes();
+        fos.write(b,this.offset,b.length);
+        this.offset += b.length;
+        if(this.count_mess == (this.nummess - 1)){
           for (int i=0; i < this.ordre_de_reception.length-1 ; i++) {
             if( this.ordre_de_reception[i] > this.ordre_de_reception[i+1] ){
               this.file.delete();
