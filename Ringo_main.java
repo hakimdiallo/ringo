@@ -5,7 +5,7 @@ import java.util.Scanner;
 
 public class Ringo_main {
 	public static void main(String[] args){
-		Entite entite = new Entite(args[0],args[1], args[2],args[3], args[4], args[5]);
+		Entite entite = new Entite(UtilsAndController.makeUniqueId(),args[0], args[1],args[2], args[3], args[4]);
 		System.out.println(entite);
 		Insertion ins = new Insertion(entite);
 		ins.recInsertion();
@@ -36,7 +36,16 @@ public class Ringo_main {
 					else if( (tab[0].equals("gbye")) )
 						tudp.sendGBYE();
 					else if( (tab[0].equals("test")) ){
-						tudp.sendTEST(true);
+						if((tab.length==1))
+							tudp.sendTEST(true);
+						else
+							tudp.sendTEST(false);
+					}
+					else if( (tab[0].equals("appl")) ){
+						tudp.sendDIFF(mess);
+					}
+					else if( (tab[0].equals("tchat")) ){
+						tudp.sendTCHAT(mess);
 					}
 					else if( (tab.length == 2) && (tab[0].equals("trans")) ){
 						tudp.sendReq(mess);

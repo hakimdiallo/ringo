@@ -16,7 +16,7 @@ public class Entite {
   private Anneau [] anneau;
   LinkedList<String> idmList;
   LinkedList<String> idmApp;
-  
+
   public Entite(String id, String portTCP, String portUDP1, String portUDP2, String portDiff, String ipDiff){
 	String ip = this.getMyIp();
 	anneau = new Anneau[2];
@@ -28,18 +28,18 @@ public class Entite {
     	this.id = id;
     	this.ip = this.string2addressApp(ip);
     	Anneau anneau = new Anneau(portUDP1, portDiff, this.string2addressApp(ip),
-    					this.string2addressApp(ipDiff), new Identifiant(this.id));
+    					this.string2addressApp(ipDiff));
     	this.anneau[0] = anneau;
     	this.anneau[1] = null;
     	this.idmList =new LinkedList<String>();
     	this.idmApp = new LinkedList<String>();
     }
   }
-  
+
   //Converti une adresse au format d'adresse de l'application (127.0.0.1 to 127.000.000.001)
   public String string2addressApp(String ip){
 	  String []tab = ip.split("[.]");
-	  String res = ""; 
+	  String res = "";
 	  for (int i=0; i<=3; i++) {
 		if(tab[i].length() == 1)
 			res += "00"+tab[i];
@@ -82,7 +82,7 @@ public class Entite {
 	    return ipAddress;
 	}
 
-  //Vérifie si un identifiant est codé sur 8octects 
+  //Vérifie si un identifiant est codé sur 8octects
   public boolean idIsOk(String id){
   	if( (id.length() > 8) || (id.length() == 0)) {
   	    System.out.println("Erreur : id "+id+" incorrect");
@@ -90,8 +90,8 @@ public class Entite {
   	}
   	return true;
   }
-  
- //Vérifie si une adresse ip est correct 
+
+ //Vérifie si une adresse ip est correct
 public boolean ipIsOk(String ip){
 	Pattern pattern = Pattern.compile("\\d{3}[.]\\d{3}[.]\\d{3}[.]\\d{3}");
 	if(!pattern.matcher(ip).matches()) {
@@ -101,7 +101,7 @@ public boolean ipIsOk(String ip){
 	return true;
 }
 
-//vérifie le format, la taille et l'intervalle dans lequel se trouve un port. 
+//vérifie le format, la taille et l'intervalle dans lequel se trouve un port.
 public boolean portIsOk(String port){
 	try{
 		int n = Integer.parseInt(port);
@@ -120,7 +120,7 @@ public boolean portIsOk(String port){
 	return true;
 }
 
-//vérifie le format, la taille et l'intervalle dans lequel se trouve un port. 
+//vérifie le format, la taille et l'intervalle dans lequel se trouve un port.
 public boolean messIsOk(String mess){
 	if( mess.length() > 512 ){
 		System.out.println("Erreur : Le Message n'est pas codé sur 512 octets");

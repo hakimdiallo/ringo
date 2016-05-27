@@ -81,7 +81,7 @@ public class TraitementMessageUDP extends Thread{
 				if(entite.getAnneau1() != null){
 					//si l'entité est le prédécesseur de l'entité souhaitant sortie de l'anneau
 					if( (entite.getAnneau1().getIpNext().equals(tab[2])) && (entite.getAnneau1().getPortNextUDP().equals(tab[3])) ){
-						String idm = this.entite.getAnneau1().getIdm().newId();//On génère un idm
+						String idm = UtilsAndController.makeUniqueId();
 						//envoie "EYBG idm"
 						mess = Message.EYBG.toString()+" "+idm;
 						this.send(mess, this.entite.getAnneau1());
@@ -95,7 +95,7 @@ public class TraitementMessageUDP extends Thread{
 				if(entite.getAnneau2() != null){
 					//si l'entité est le prédécesseur de l'entité souhaitant sortie de l'anneau
 					if( (entite.getAnneau2().getIpNext().equals(tab[2])) && (entite.getAnneau2().getPortNextUDP().equals(tab[3])) ){
-						String idm = this.entite.getAnneau2().getIdm().newId();//On génère un idm
+						String idm = UtilsAndController.makeUniqueId();
 						//envoie "EYBG idm"
 						mess = Message.EYBG.toString()+" "+idm;
 						this.send(mess, this.entite.getAnneau2());
@@ -147,24 +147,13 @@ public class TraitementMessageUDP extends Thread{
 				(this.entite.idIsOk(tab[2])) ){
 			//Si l'id du mess n'est pas dans la liste d'idm de l'entité
 			if(!this.entite.idmList.contains(tab[1])){
-				this.entite.idmList.add(tab[1]);
 				//Si un anneau existe
 				if( (entite.getAnneau1() != null) || (entite.getAnneau2() != null)  ){
 					this.recDIFF(mess);
-					this.recTRANS(mess);
+					//this.recTRANS(mess);
 				}
 			}
 		}
-	}
-
-	//Retourne un identifiant de message en prenant le prochain identifiant dans l'anneau
-	public String idForDouble(){
-		String idm;
-		if( entite.getAnneau1() != null )
-			idm = this.entite.getAnneau1().getIdm().newId();
-		else
-			idm = this.entite.getAnneau2().getIdm().newId();
-		return idm;
 	}
 
 	public void send(String mess, Anneau anneau){
@@ -183,8 +172,24 @@ public class TraitementMessageUDP extends Thread{
 		}
 	}
 
+	public void sendPortDIFF(String mess, Anneau anneau){
+		try {
+			DatagramSocket so=new DatagramSocket();
+			byte[]data;
+			data=mess.getBytes();
+			DatagramPacket paquet=new
+						DatagramPacket(data,data.length,InetAddress.getByName(anneau.getIpDiff()),
+						Integer.parseInt(anneau.getPortDiff()));
+			so.send(paquet);
+			so.close();
+		}catch(Exception e){
+			System.out.println("Erreur : message \""+mess+"\" non envoyé");
+			e.printStackTrace();
+		}
+	}
+
 	public void sendWHOS(){
-		String idm = this.idForDouble();
+		String idm = UtilsAndController.makeUniqueId();
 		this.entite.idmList.add(idm);
 		if( entite.getAnneau1() != null )
 			this.send("WHOS "+idm, this.entite.getAnneau1());
@@ -193,7 +198,7 @@ public class TraitementMessageUDP extends Thread{
 	}
 
 	public void sendMEMB(){
-		String idm = this.idForDouble();
+		String idm = UtilsAndController.makeUniqueId();
 		this.entite.idmList.add(idm);
 		String mess = Message.MEMB.toString()+" "+idm+" "+this.entite.getId()+" "+this.entite.getIp()+" "+this.entite.getPortUDP1();
 		if( entite.getAnneau1() != null )
@@ -203,7 +208,7 @@ public class TraitementMessageUDP extends Thread{
 	}
 
 	public void sendGBYE(){
-		String idm = this.idForDouble();
+		String idm = UtilsAndController.makeUniqueId();
 		if( entite.getAnneau1() != null )
 			this.send(Message.GBYE.toString()+" "+idm+" "+this.entite.getIp()+" "+this.entite.getPortUDP1()+" "+this.entite.getAnneau1().getIpNext()+
 					" "+this.entite.getAnneau1().getPortNextUDP(), this.entite.getAnneau1());
@@ -216,7 +221,7 @@ public class TraitementMessageUDP extends Thread{
 		MessTest messTest;
 		if(isAnneau1){
 			if( (entite.getAnneau1() != null) ){
-				String idm = this.entite.getAnneau1().getIdm().newId();
+				String idm = UtilsAndController.makeUniqueId();
 				//envoie "TEST idm ip-diff port-diff"
 				String mess = Message.TEST+" "+idm+" "+this.entite.getAnneau1().getIpDiff()+" "+this.entite.getAnneau1().getPortDiff();
 				this.send(mess, this.entite.getAnneau1());
@@ -225,7 +230,7 @@ public class TraitementMessageUDP extends Thread{
 			}
 		}else{
 			if( (entite.getAnneau2() != null) ){
-				String idm = this.entite.getAnneau2().getIdm().newId();
+				String idm = UtilsAndController.makeUniqueId();
 				//envoie "TEST idm ip-diff port-diff"
 				String mess = "Test "+idm+" "+this.entite.getAnneau2().getIpDiff()+" "+this.entite.getAnneau2().getPortDiff();
 				this.send(mess, this.entite.getAnneau2());
@@ -256,15 +261,24 @@ public class TraitementMessageUDP extends Thread{
 		//On traite l'application de diffusion de messages
 		if( (tab.length >=5) && (tab[3].length() ==3) && (tab[2].equals("DIFF####")) ){//
 			try{
-				int taille = Integer.parseInt(tab[3]);
-				for (int i=0; i < taille ; i++ ) {
-
+					Integer.parseInt(tab[3]);
+				}catch (NumberFormatException e){
+					System.out.println("Erreur : La taille du message reçu n'est pas un entier");
 				}
 				this.transMess(mess);
-			}catch (NumberFormatException e){
-				System.out.println("Erreur : La taille du message reçu n'est pas un entier");
-			}
 		}
+	}
+
+	public void sendTCHAT(String mess){
+		String[] tab = mess.split("::::");
+		String idm = UtilsAndController.makeUniqueId();
+		this.entite.idmList.add(idm);
+		String size = this.convertSize(Integer.toString(tab[1].length()-1), 3);
+		String mess1 = Message.APPL.toString()+" "+idm+" TCHAT#### "+size+" "+tab[1]+"\tauteur:"+this.entite.getId();
+		if( entite.getAnneau1() != null )
+			this.sendPortDIFF(mess1, this.entite.getAnneau1());
+		if( entite.getAnneau2() != null )
+			this.sendPortDIFF(mess1, this.entite.getAnneau2());
 	}
 
 	public String convertSize(String st, int n){
@@ -280,7 +294,7 @@ public class TraitementMessageUDP extends Thread{
 	public void recDIFFforClient(String mess){
 		String[] tab = mess.split("::::");
 		if( (tab.length==2) && (tab[0].equals("DIFF"))){
-			String idm = this.idForDouble();
+			String idm = UtilsAndController.makeUniqueId();
 			this.entite.idmList.add(idm);
 			String size = this.convertSize(Integer.toString(tab[1].length()-1), 3);
 			mess = Message.APPL.toString()+" "+idm+"DIFF####"+size+" "+tab[1];
@@ -289,6 +303,18 @@ public class TraitementMessageUDP extends Thread{
 			if( entite.getAnneau2() != null )
 				this.send(mess, this.entite.getAnneau2());
 		}
+	}
+
+	public void sendDIFF(String mess){
+		String[] tab = mess.split("::::");
+		String idm = UtilsAndController.makeUniqueId();
+		this.entite.idmList.add(idm);
+		String size = this.convertSize(Integer.toString(tab[1].length()-1), 3);
+		String mess1 = Message.APPL.toString()+" "+idm+" DIFF#### "+size+" "+tab[1];
+		if( entite.getAnneau1() != null )
+			this.send(mess1, this.entite.getAnneau1());
+		if( entite.getAnneau2() != null )
+			this.send(mess1, this.entite.getAnneau2());
 	}
 
 	public void recTRANS(String mess){
