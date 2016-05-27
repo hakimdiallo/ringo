@@ -232,7 +232,7 @@ public class TraitementMessageUDP extends Thread{
 			if( (entite.getAnneau2() != null) ){
 				String idm = UtilsAndController.makeUniqueId();
 				//envoie "TEST idm ip-diff port-diff"
-				String mess = "Test "+idm+" "+this.entite.getAnneau2().getIpDiff()+" "+this.entite.getAnneau2().getPortDiff();
+				String mess = "TEST "+idm+" "+this.entite.getAnneau2().getIpDiff()+" "+this.entite.getAnneau2().getPortDiff();
 				this.send(mess, this.entite.getAnneau2());
 				messTest = new MessTest(this.entite, this.entite.getAnneau2(), idm);
 				messTest.start();
