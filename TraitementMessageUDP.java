@@ -371,9 +371,6 @@ public class TraitementMessageUDP extends Thread{
 				System.out.println("Message de transfert de ficher de mauvais format");
 			}
 		}
-		else{
-			System.out.println("Message de mauvais format");
-		}
 	}
 
 	public void sendReq(String mess){
