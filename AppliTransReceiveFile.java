@@ -71,10 +71,11 @@ public class AppliTransReceiveFile {
   public void receive(String[] tab){
     try{
       if(this.count_mess > this.nummess){
-        FileOutputStream fos = new FileOutputStream(this.file);
+        FileOutputStream fos = new FileOutputStream(new File(this.nom_fichier));
         this.ordre_de_reception[this.count_mess] = UtilsAndController.toBigEndian(tab[5]);
         this.count_mess++;
         byte[] b = tab[7].getBytes();
+        System.out.println("--------------------------------------------Writing into file---------------------------------------------------------------------");
         fos.write(b,this.offset,b.length);
         this.offset += b.length;
         if(this.count_mess == (this.nummess - 1)){
@@ -87,9 +88,9 @@ public class AppliTransReceiveFile {
           }
         }
       }
-      else{
+      /*else{
         System.out.println("OUUUU LA LA LA LA... probleme");
-      }
+      }*/
     }
     catch(Exception e){
       System.out.println("Erreur ");
