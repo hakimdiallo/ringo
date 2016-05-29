@@ -80,7 +80,7 @@ int fill_an(zdd_anneau *an, char *ipNext, char *ipDiff, char *portUDPNext, char 
 
 zdd_entites* create_entite(char *id, char *ipDiff, char *portTCP, char *portUDP1, char *portUDP2, char *portUDP, char *portDiff){
   zdd_entites *ent = (zdd_entites *)malloc(sizeof(zdd_entites));
-  //if(ipIsOk(ip) && idIsOk(id) && ipIsOk(ipDiff) && portIsOk(portUDP1) && portIsOk(portTCP) && portIsOk(portUDP2) && portIsOk(portDiff)){
+  if(idIsOk(id) && ipIsOk(ipDiff) && portIsOk(portUDP1) && portIsOk(portTCP) && portIsOk(portUDP2) && portIsOk(portDiff)){
     ent->id = strdup(id);
     ent->ip = string2addressApp(getAddr());
     ent->portTCP = strdup(portTCP);
@@ -88,7 +88,7 @@ zdd_entites* create_entite(char *id, char *ipDiff, char *portTCP, char *portUDP1
     ent->portUDP2 = strdup(portUDP2);
     fill_an(&(ent->an), string2addressApp(getAddr()), ipDiff, portUDP1, portDiff);
     return ent;
-  //}
+  }
   return NULL;
 }
 
@@ -105,6 +105,7 @@ void showEntites(zdd_entites *ent){
     printf("port multidiffusion : %s\n", ent->an.portDiff);
   }
 }
+
 char* getAddr(){
   struct ifaddrs *myaddrs, *ifa;
   struct sockaddr_in *s4;
