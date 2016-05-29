@@ -21,8 +21,8 @@ typedef struct {
   char *id;
   char *portTCP;
   char *ip;
-  zdd_anneau *an;//Caractéristique lié à l'anneau
-  zdd_anneau *an_d;//Caractéristique lié à l'anneau doubleur
+  zdd_anneau an;//Caractéristique lié à l'anneau
+  zdd_anneau an_d;//Caractéristique lié à l'anneau doubleur
 } zdd_entites;
 
 //alloue la mémoire pour la structure zdd_anneau
@@ -54,4 +54,6 @@ int accept_insertion(zdd_entites *ent);
 const char * string2sadress(char *res, char *addr);
 
 char * adress2string(char addr[]);
+
+const char *string2addressApp(char *ip);
 #endif

@@ -26,41 +26,54 @@ void malloc_an(zdd_anneau *an){
 }
 
 void free_an(zdd_anneau *an){
-  free(&(an->portUDPNext));
-  free(&(an->portDiff));
-  free(&(an->ipNext));
-  free(&(an->ipDiff));
+  free(an->portUDPNext);
+  free(an->portDiff);
+  free(an->ipNext);
+  free(an->ipDiff);
   free(an);
 }
 
-int add_ip(char *p, char *ip){
-  /*if((strlen(ip) != 15) ){
+int ipIsOk(char *ip){
+  if((strlen(ip) != 15) ){
     if(DEBUG)
       fprintf(stderr, "format adresse  invalide : %s\n", ip);
-    return -1;
-  }*/
-  p = strdup(ip);
-  return 0;
+    return 0;
+  }
+  return 1;
 }
 
-int add_port(char *p, char *port){
-  int port_i = atoi(port);
-  if( (port_i < 0) || (port_i >= 9999)  ){
+int idIsOk(char *id){
+  if((strlen(id) != 8) ){
     if(DEBUG)
-      fprintf(stderr, "port incorrect ! : %s\n", port);
-    return -1;
+      fprintf(stderr, "format identifiant  invalide : %s\n", id);
+    return 0;
   }
-  p = (char *)strdup(port);
-  return 0;
+  return 1;
+}
+
+int portIsOk(char *port){
+  if((strlen(port) != 4) ){
+    if(DEBUG)
+      fprintf(stderr, "format port  invalide : %s\n", port);
+    return 0;
+  }
+  return 1;
+}
+
+int messIsOk(char *mess){
+  if((strlen(mess) > 512) ){
+    if(DEBUG)
+      fprintf(stderr, "format message  invalide : taille %d\n", (int)strlen(mess));
+    return 0;
+  }
+  return 1;
 }
 
 int fill_an(zdd_anneau *an, char *ipNext, char *ipDiff, char *portUDPNext, char *portDiff){
-  //if( (add_ip((void *)(an->ipNext), ipNext)) || (add_ip((void *)(an->ipDiff), ipDiff)) || (add_port((void *)(an->portUDP), portUDP)) || (add_port((void *)(an->portUDPNext), portUDPNext)) || add_port((void *)(an->portDiff), portDiff) )
-  add_ip((void *)(an->ipNext), ipNext);
-  add_ip((void *)(an->ipDiff), ipDiff);
-  add_port((void *)(an->portUDPNext), portUDPNext);
-  add_port((void *)(an->portDiff), portDiff);
-  //    return -1;
+  an->ipDiff = strdup(ipDiff);
+  an->ipNext = strdup(ipNext);
+  an->portDiff = strdup(portDiff);
+  an->portUDPNext = strdup(portUDPNext);
   return 0;
 }
 
@@ -72,25 +85,15 @@ zdd_entites* create_entite(char *id, char *ip, char *ipDiff, char *portTCP, char
     return NULL;
   }
   zdd_entites *ent = (zdd_entites *)malloc(sizeof(zdd_entites));
-  /*ent->id = malloc(sizeof(char)*8);
-  ent->portTCP = malloc(sizeof(char)*4);
-  ent->ip = malloc(sizeof(char)*15);*/
-  if((strlen(ip)!=15)||(strlen(id)!=8)||(strlen(ipDiff)!=15)||(strlen(portUDP1)!=4)||(strlen(portUDP)!=4)||(strlen(portDiff)!=4)){
-    if(DEBUG)
-      fprintf(stderr, "Erreur  : création d'entité");
-    return NULL;
+  if(ipIsOk(ip) && idIsOk(id) && ipIsOk(ipDiff) && portIsOk(portUDP1) && portIsOk(portTCP) && portIsOk(portUDP2) && portIsOk(portDiff)){
+    ent->id = strdup(id);
+    ent->ip = strdup(ip);
+    ent->portTCP = strdup(portTCP);
+    ent->portUDP1 = strdup(portUDP1);
+    ent->portUDP2 = strdup(portUDP2);
+    fill_an(&(ent->an), ip, ipDiff, portUDP1, portDiff);
+    return ent;
   }
-  ent->id = strdup(id);
-  ent->ip = strdup(ip);
-  ent->portTCP = strdup(portTCP);
-  ent->portUDP1 = strdup(portUDP1);
-  ent->portUDP2 = strdup(portUDP2);
-  ent->an = (zdd_anneau *)malloc(sizeof(zdd_anneau));
-  ent->an->ipDiff = strdup(ipDiff);
-  ent->an->ipNext = strdup(ip);
-  ent->an->portDiff = strdup(portDiff);
-  ent->an->portUDPNext = strdup(portUDP1);
-  return ent;
 }
 
 void showEntites(zdd_entites *ent){
@@ -100,10 +103,10 @@ void showEntites(zdd_entites *ent){
   printf("port UDP 2 : %s\n", ent->portUDP2);
   printf("port TCP : %s\n", ent->portTCP);
   if( &(ent->an) != NULL ){
-    printf("Anneau 1 ---------------\nIp next : %s\n", ent->an->ipNext);
-    printf("port UDP next : %s\n", ent->an->portUDPNext);
-    printf("Ip multidiffusion : %s\n", ent->an->ipDiff);
-    printf("port multidiffusion : %s\n", ent->an->portDiff);
+    printf("Anneau 1 ---------------\nIp next : %s\n", (ent->an).ipNext);
+    printf("port UDP next : %s\n", (ent->an).portUDPNext);
+    printf("Ip multidiffusion : %s\n", ent->an.ipDiff);
+    printf("port multidiffusion : %s\n", ent->an.portDiff);
   }
 }
 
@@ -111,11 +114,35 @@ void free_entite(zdd_entites *ent){
   free(ent->id);
   free(ent->portTCP);
   free(ent->ip);
-  free_an(ent->an);
-  if(ent->an_d != NULL)
-    free_an(ent->an_d);
+  free_an(&(ent->an));
+/*  if(ent->an_d != NULL)
+    free_an(ent->an_d);*/
   free(ent);
 }
+
+const char *string2addressApp(char *ip){
+  char *res = malloc(sizeof(char) * 16);
+  char *addr = strdup(ip);
+  addr = strdup(ip);
+  char *elt = NULL;
+  elt = strtok(addr, ".");
+  //res = "\0";
+  int i;
+  for (i = 0; i <= 3; i++) {
+    if(strlen(elt)==1)
+      sprintf(res, "00%s%s", res, elt);
+    if(strlen(elt)==2)
+      sprintf(res, "0%s%s", res, elt);
+    if(strlen(elt)==3)
+        sprintf(res, "%s%s", res, elt);
+    elt = strtok(NULL, ".");
+    if(i!=3)
+      sprintf(res, "%s%s", res, ".");
+  }
+  printf("res %s\n", res);
+  free(addr);
+	  return res;
+  }
 /*
 int ask_insertion(zdd_entites *new_ent, char *adress, char *portTCP){
   int port = atoi((const char*)portTCP);
@@ -224,7 +251,7 @@ int accept_insertion(zdd_entites *ent){
     }
   }
 }
-
+*/
 
 const char * string2sadress(char *res, char *ip){
   char * elt = NULL;
@@ -261,4 +288,4 @@ const char * string2sadress(char *res, char *ip){
 
 char * adress2string(char addr[]){
   return addr;
-}*/
+}
