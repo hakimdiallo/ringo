@@ -1,0 +1,3 @@
+compiler le projet avec javac Ringo_main.java
+
+executer avec: java Ringo_main [port] [port] [port] [port] [ip de diffusion]
