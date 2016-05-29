@@ -28,7 +28,7 @@ public class Entite {
     	this.id = id;
     	this.ip = this.string2addressApp(ip);
     	Anneau anneau = new Anneau(portUDP1, portDiff, this.string2addressApp(ip),
-    					this.string2addressApp(ipDiff));
+    					this.string2addressApp(ipDiff), new Identifiant(this.id));
     	this.anneau[0] = anneau;
     	this.anneau[1] = null;
     	this.idmList =new LinkedList<String>();

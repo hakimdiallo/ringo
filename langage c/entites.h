@@ -5,6 +5,13 @@
 #include <string.h>
 #include <netinet/in.h>
 #include <arpa/inet.h>
+#include <ifaddrs.h>
+#include <unistd.h>
+#include <sys/types.h>
+#include <sys/socket.h>
+#include <ifaddrs.h>
+#include <sys/ioctl.h>
+#include <net/if.h>
 
 typedef struct in_addr zdd_adresse4;
 
@@ -36,7 +43,7 @@ int fill_an(zdd_anneau *an, char *ipNext, char *ipDiff, char *portUDPNext, char 
 
 
 //Créer une nouvelle entité avec ses caractéristiques
-zdd_entites* create_entite(char *id, char *ip, char *ipDiff, char *portTCP, char *portUDP1, char *portUDP2, char *portUDP,char *portDiff);
+zdd_entites* create_entite(char *id, char *ipDiff, char *portTCP, char *portUDP1, char *portUDP2, char *portUDP,char *portDiff);
 //Voir les informations d'une entité
 void showEntites(zdd_entites *ent);
 
@@ -50,10 +57,10 @@ int ask_insertion(zdd_entites *new_ent, char adress[], char portTCP[]);
 //Autorisation d'insertion
 int accept_insertion(zdd_entites *ent);
 
-//
-const char * string2sadress(char *res, char *addr);
+//Pour recuperer l'adresse ip
+char* getAddr();
 
 char * adress2string(char addr[]);
 
-const char *string2addressApp(char *ip);
+char *string2addressApp(char *ip);
 #endif

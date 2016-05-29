@@ -78,15 +78,15 @@ int fill_an(zdd_anneau *an, char *ipNext, char *ipDiff, char *portUDPNext, char 
 }
 
 
-zdd_entites* create_entite(char *id, char *ip, char *ipDiff, char *portTCP, char *portUDP1, char *portUDP2, char *portUDP, char *portDiff){
+zdd_entites* create_entite(char *id, char *ipDiff, char *portTCP, char *portUDP1, char *portUDP2, char *portUDP, char *portDiff){
   zdd_entites *ent = (zdd_entites *)malloc(sizeof(zdd_entites));
   //if(ipIsOk(ip) && idIsOk(id) && ipIsOk(ipDiff) && portIsOk(portUDP1) && portIsOk(portTCP) && portIsOk(portUDP2) && portIsOk(portDiff)){
     ent->id = strdup(id);
-    ent->ip = string2addressApp(ip);
+    ent->ip = string2addressApp(getAddr());
     ent->portTCP = strdup(portTCP);
     ent->portUDP1 = strdup(portUDP1);
     ent->portUDP2 = strdup(portUDP2);
-    fill_an(&(ent->an), ip, ipDiff, portUDP1, portDiff);
+    fill_an(&(ent->an), string2addressApp(getAddr()), ipDiff, portUDP1, portDiff);
     return ent;
   //}
   return NULL;
@@ -105,6 +105,31 @@ void showEntites(zdd_entites *ent){
     printf("port multidiffusion : %s\n", ent->an.portDiff);
   }
 }
+char* getAddr(){
+  struct ifaddrs *myaddrs, *ifa;
+  struct sockaddr_in *s4;
+  int status;
+  char *ip=(char *)malloc(64*sizeof(char));
+  status = getifaddrs(&myaddrs);
+  if (status != 0){
+    perror("Probleme de recuperation d'adresse IP");
+    exit(1);
+  }
+  for (ifa = myaddrs; ifa != NULL; ifa = ifa->ifa_next){
+    if (ifa->ifa_addr == NULL) continue;
+    if ((ifa->ifa_flags & IFF_UP) == 0) continue;
+    if ((ifa->ifa_flags & IFF_LOOPBACK) != 0) continue;
+    if (ifa->ifa_addr->sa_family == AF_INET){
+      s4 = (struct sockaddr_in *)(ifa->ifa_addr);
+      freeifaddrs(myaddrs);
+      if (inet_ntop(ifa->ifa_addr->sa_family, (void *)&(s4->sin_addr),
+      ip, 64*sizeof(char)) != NULL)
+        return ip;
+    }
+  }
+  return NULL;
+}
+
 
 void free_entite(zdd_entites *ent){
   free(ent->id);
@@ -116,8 +141,9 @@ void free_entite(zdd_entites *ent){
   free(ent);
 }
 
-const char *string2addressApp(char *ip){
-  char *res = malloc(sizeof(char) * 16);
+char *string2addressApp(char *ip){
+  char *res = malloc(sizeof(char) * 15);
+  sprintf(res, "");
   char *addr = strdup(ip);
   addr = strdup(ip);
   char *elt = NULL;
@@ -248,38 +274,7 @@ int accept_insertion(zdd_entites *ent){
 }
 */
 
-const char * string2sadress(char *res, char *ip){
-  char * elt = NULL;
-  char *addr = malloc(sizeof(char) * 16);
-  strcpy(addr, (const char *)ip);
-  elt = strtok(addr, ".");
-  int i = 1;
-  while ((elt != NULL)) {
-    if( (elt[0] == '0') && (elt[1] == '0') ){
-      elt[0] = elt[2];
-      elt[1] = '\0';
-    }else {
-      if(elt[0] == '0'){
-        elt[0] = elt[1];
-        elt[1] = elt[2];
-        elt[2] = '\0';
-      }
-    }
-    printf("elt :%s\n", elt);
-    printf("res : %s\n", res);
-    //strcat(res, elt);
 
-    if(i < 4)
-      sprintf(res, "%s%s.", res, elt);
-    else
-      sprintf(res, "%s%s", res, elt);
-    i++;
-    elt = strtok(NULL, ".");
-  }
-  free(addr);
-  printf(" resultat %s\n", res);
-  return  res;
-}
 
 char * adress2string(char addr[]){
   return addr;
