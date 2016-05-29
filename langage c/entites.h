@@ -12,6 +12,7 @@
 #include <ifaddrs.h>
 #include <sys/ioctl.h>
 #include <net/if.h>
+#include <uuid/uuid.h>
 
 typedef struct in_addr zdd_adresse4;
 
@@ -59,6 +60,8 @@ int accept_insertion(zdd_entites *ent);
 
 //Pour recuperer l'adresse ip
 char* getAddr();
+
+char *newId();
 
 char * adress2string(char addr[]);
 

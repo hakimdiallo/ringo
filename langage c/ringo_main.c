@@ -10,6 +10,7 @@ int main(int argc, char const *argv[]) {
     printf("Erreur\n");
     return 1;
   }
+  printf("%s\n", newId());
   char *ip = getAddr();
   printf("%s\n", ip);
 //  accept_insertion(ent);

@@ -16,6 +16,15 @@
 #define ACKD_MESS "ACKD"
 #define NOTC_MESS "NOTC"
 
+char *newId(){
+  char *res = malloc(sizeof(char)*16);
+  char *res1 = malloc(sizeof(char)*8);
+  uuid_t out;
+  uuid_generate(out);
+  uuid_unparse(out, res);
+  snprintf(res1,9,"%s",res);
+  return res1;
+}
 
 void malloc_an(zdd_anneau *an){
   /*an->portUDPNext = NULL;

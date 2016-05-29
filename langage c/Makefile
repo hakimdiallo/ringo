@@ -1,5 +1,5 @@
 CC = gcc
-CFLAGS =
+CFLAGS = -luuid
 EXEC = ringo_main
 HEADERS = $(wildcard *.h)
 OBJECTS = $(patsubst %.c, %.o, $(wildcard *.c))
@@ -7,10 +7,10 @@ OBJECTS = $(patsubst %.c, %.o, $(wildcard *.c))
 all: $(EXEC)
 
 $(EXEC): $(OBJECTS)
-	$(CC) -o $@ $^ $(CPPFLAGS) $(CFLAGS)
+	$(CC) -o $@ $^ $(CFLAGS)
 
 %.o: %.c $(HEADERS)
-	$(CC) $(CFLAGS) -c $< $(CPPFLAGS)
+	$(CC) $(CFLAGS) -c $< $(CFLAGS)
 
 mrproper: clean
 	rm -f $(EXEC)
