@@ -10,7 +10,6 @@ int main(int argc, char const *argv[]) {
     printf("Erreur\n");
     return 1;
   }
-  string2addressApp("127.000.000.001");
 //  accept_insertion(ent);
   //free_entite(ent);
   /*char *elt = malloc(16);

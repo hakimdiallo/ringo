@@ -79,21 +79,17 @@ int fill_an(zdd_anneau *an, char *ipNext, char *ipDiff, char *portUDPNext, char 
 
 
 zdd_entites* create_entite(char *id, char *ip, char *ipDiff, char *portTCP, char *portUDP1, char *portUDP2, char *portUDP, char *portDiff){
-  if( (strlen(id) > 8) || (strlen(ip) > 15) || (strlen(portTCP) > 4) || (strlen(portUDP1) > 4) || (strlen(portUDP2) > 4)){
-    if(DEBUG)
-      fprintf(stderr, "Erreur lors de la création \n");
-    return NULL;
-  }
   zdd_entites *ent = (zdd_entites *)malloc(sizeof(zdd_entites));
-  if(ipIsOk(ip) && idIsOk(id) && ipIsOk(ipDiff) && portIsOk(portUDP1) && portIsOk(portTCP) && portIsOk(portUDP2) && portIsOk(portDiff)){
+  //if(ipIsOk(ip) && idIsOk(id) && ipIsOk(ipDiff) && portIsOk(portUDP1) && portIsOk(portTCP) && portIsOk(portUDP2) && portIsOk(portDiff)){
     ent->id = strdup(id);
-    ent->ip = strdup(ip);
+    ent->ip = string2addressApp(ip);
     ent->portTCP = strdup(portTCP);
     ent->portUDP1 = strdup(portUDP1);
     ent->portUDP2 = strdup(portUDP2);
     fill_an(&(ent->an), ip, ipDiff, portUDP1, portDiff);
     return ent;
-  }
+  //}
+  return NULL;
 }
 
 void showEntites(zdd_entites *ent){
@@ -130,16 +126,15 @@ const char *string2addressApp(char *ip){
   int i;
   for (i = 0; i <= 3; i++) {
     if(strlen(elt)==1)
-      sprintf(res, "00%s%s", res, elt);
+      sprintf(res, "%s00%s", res, elt);
     if(strlen(elt)==2)
-      sprintf(res, "0%s%s", res, elt);
+      sprintf(res, "%s0%s", res, elt);
     if(strlen(elt)==3)
         sprintf(res, "%s%s", res, elt);
     elt = strtok(NULL, ".");
     if(i!=3)
       sprintf(res, "%s%s", res, ".");
   }
-  printf("res %s\n", res);
   free(addr);
 	  return res;
   }
